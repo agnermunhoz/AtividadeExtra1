@@ -77,8 +77,7 @@ public class ClienteDao {
 	public Cliente buscarCliente(int id) throws Exception{ 
 
 		Cliente cliente = null;
-		List<Pedido> pedidos = new ArrayList<>();
-
+		
 		try {
 			cn=DaoFactory.criarConexao();
 			String sql="SELECT NOME,EMAIL FROM clientes WHERE IDCLIENTE=?";
@@ -100,6 +99,33 @@ public class ClienteDao {
 		}
 
 		return cliente;
+
+	} 
+	
+	public List<Cliente> listarClientes() throws Exception{ 
+
+		List<Cliente> clientes = new ArrayList<>();
+		
+		try {
+			cn=DaoFactory.criarConexao();
+			String sql="SELECT IDCLIENTE,NOME,EMAIL FROM clientes ORDER BY NOME";
+			stmt = cn.prepareStatement(sql);
+			rs = stmt.executeQuery();
+			while  (rs.next()){
+				clientes.add(new Cliente(rs.getInt("IDCLIENTE"), rs.getString("NOME"), rs.getString("EMAIL")));
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		finally{
+			cn.close();
+			stmt.close();
+			if (stmt != null) stmt.close();
+			if (rs != null) rs.close();
+		}
+
+		return clientes;
 
 	} 
 }

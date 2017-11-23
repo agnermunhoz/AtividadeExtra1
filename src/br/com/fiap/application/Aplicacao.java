@@ -1,6 +1,7 @@
 package br.com.fiap.application;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 import br.com.fiap.dao.DaoFactory;
@@ -11,18 +12,21 @@ public class Aplicacao {
 
 	public static int menu() {
 		Scanner in = new Scanner(System.in); 
-	    System.out.println("*************************");
-	    System.out.println("*         MENU          *");
-	    System.out.println("* 1 - Incluir Cliente   *");
-	    System.out.println("* 2 - Alterar Cliente   *");
-	    System.out.println("* 3 - Excluir Cliente   *");
-	    System.out.println("* 4 - Pesquisar Cliente *");
-	    System.out.println("* 5 - Incluir Pedido    *");
-	    System.out.println("* 6 - Alterar Pedido    *");
-	    System.out.println("* 7 - Excluir Pedido    *");
-	    System.out.println("* 8 - Pesquisar Pedidos *");
-	    System.out.println("* 0 - Sair              *");
-	    System.out.println("*************************");
+	    System.out.println("***************************");
+	    System.out.println("*          MENU           *");
+	    System.out.println("* 1  - Incluir Cliente    *");
+	    System.out.println("* 2  - Alterar Cliente    *");
+	    System.out.println("* 3  - Excluir Cliente    *");
+	    System.out.println("* 4  - Pesquisar Cliente  *");
+	    System.out.println("* 5  - Listar Clientes    *");
+	    System.out.println("* 6  - Incluir Pedido     *");
+	    System.out.println("* 7  - Alterar Pedido     *");
+	    System.out.println("* 8  - Excluir Pedido     *");
+	    System.out.println("* 9  - Pesquisar Pedidos  *");
+	    System.out.println("* 10 - Listar Pedidos     *");
+	    System.out.println("* 11 - Pedidos do Cliente *");
+	    System.out.println("* 0  - Sair               *");
+	    System.out.println("***************************");
 	    
 	    return in.nextInt();
 	}
@@ -54,6 +58,15 @@ public class Aplicacao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static void listarCliente() {
+		try {
+			List<Cliente> clientes = DaoFactory.getDaoFactory().getClienteDao().listarClientes();
+			clientes.forEach(c -> System.out.println(c.toString()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void atualizarCliente() {
@@ -137,7 +150,25 @@ public class Aplicacao {
 		return null;
 	}
 	
-	
+	public static void listarPedidos() {
+		try {
+			List<Pedido> pedidos = DaoFactory.getDaoFactory().getPedidoDao().listarPedidos();
+			pedidos.forEach(p -> System.out.println(p.toString()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void pedidosCliente() {
+		Cliente cliente = pesquisarCliente();
+		try {
+			List<Pedido> pedidos = DaoFactory.getDaoFactory().getPedidoDao().listarPedidos(cliente);
+			pedidos.forEach(p -> System.out.println(p.toString()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	
 	public static void main(String[] args) {
 		int option = 0;
@@ -157,16 +188,25 @@ public class Aplicacao {
 				pesquisarCliente();
 				break;
 			case 5:
-				incluirPedido();
+				listarCliente();
 				break;
 			case 6:
-				atualizarPedido();
+				incluirPedido();
 				break;
 			case 7:
-				excluirPedido();
+				atualizarPedido();
 				break;
 			case 8:
+				excluirPedido();
+				break;
+			case 9:
 				pesquisarPedido();
+				break;
+			case 10:
+				listarPedidos();
+				break;
+			case 11:
+				pedidosCliente();
 				break;
 			default:
 				System.out.println("Finalizando aplicativo!!!");

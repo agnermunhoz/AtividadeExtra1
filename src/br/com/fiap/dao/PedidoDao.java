@@ -120,30 +120,61 @@ public class PedidoDao {
 
 	}
 	
-	public List<Pedido> listarPedido(int idCliente) throws Exception { 
+	public List<Pedido> listarPedidos() throws Exception{ 
+
 		List<Pedido> pedidos = new ArrayList<>();
-		
+
 		try {
 			cn=DaoFactory.criarConexao();
-			
-			
-			String sql="SELECT IDPEDIDO,IDCLIENTE,DATA,DESCRICAO,VALOR FROM pedidos WHERE IDCLIENTE=?";
+			String sql="SELECT IDPEDIDO, IDCLIENTE, DATA, DESCRICAO, VALOR FROM pedidos ORDER BY DATA";
 			stmt = cn.prepareStatement(sql);
-			stmt.setInt(1, idCliente);
 			rs = stmt.executeQuery();
 			while (rs.next()){
-				pedidos.add(new Pedido(rs.getInt("IDPEDIDO"), rs.getDate("DATA"),rs.getString("DESCRICAO"), rs.getDouble("VALOR"), idCliente));
+				pedidos.add(new Pedido(rs.getInt("IDPEDIDO"), rs.getDate("DATA"), rs.getString("DESCRICAO"), rs.getDouble("VALOR"), rs.getInt("IDCLIENTE")));
 			}
+
 		} catch (Exception e) {
 			throw e;
 		}
 		finally{
 			cn.close();
+			stmt.close();
 			if (stmt != null) stmt.close();
 			if (rs != null) rs.close();
 		}
-		
+
 		return pedidos;
-		
 	}
+
+	public List<Pedido> listarPedidos(Cliente cliente) throws Exception{
+		return listarPedidos(cliente.getId());
+	}
+	
+	public List<Pedido> listarPedidos(int idCliente) throws Exception{ 
+
+		List<Pedido> pedidos = new ArrayList<>();
+
+		try {
+			cn=DaoFactory.criarConexao();
+			String sql="SELECT IDPEDIDO, IDCLIENTE, DATA, DESCRICAO, VALOR FROM pedidos WHERE IDCLIENTE = ? ORDER BY DATA";
+			stmt = cn.prepareStatement(sql);
+			stmt.setInt(1, idCliente);
+			rs = stmt.executeQuery();
+			while (rs.next()){
+				pedidos.add(new Pedido(rs.getInt("IDPEDIDO"), rs.getDate("DATA"), rs.getString("DESCRICAO"), rs.getDouble("VALOR"), rs.getInt("IDCLIENTE")));
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		finally{
+			cn.close();
+			stmt.close();
+			if (stmt != null) stmt.close();
+			if (rs != null) rs.close();
+		}
+
+		return pedidos;
+	}
+
 }
